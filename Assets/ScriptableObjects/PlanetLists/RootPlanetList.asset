@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: RootPlanetList
   m_EditorClassIdentifier: 
   listName: Root Planets List
-  planets:
-  - {fileID: 11400000, guid: b0a5ee9261b4e8746b070e4723ffffd9, type: 2}
-  - {fileID: 11400000, guid: 534a31b9b11fd3a42b5d26cfe2b1654e, type: 2}
-  - {fileID: 11400000, guid: b0a5ee9261b4e8746b070e4723ffffd9, type: 2}
+  planetMeshes:
+  - {fileID: 2823882128583573173, guid: cedac0d63b6d13641b25b2c613f31c8a, type: 3}
+  - {fileID: 6254710872179608641, guid: 65487a09f516bac42869de656dc3805c, type: 3}
+  - {fileID: 2823882128583573173, guid: cedac0d63b6d13641b25b2c613f31c8a, type: 3}
   materials:
   - {fileID: 2100000, guid: 61ebff5361e295c46bdf619bd7720c87, type: 2}
   - {fileID: 2100000, guid: a54699e58971a3049b8d1a636db7bf0e, type: 2}

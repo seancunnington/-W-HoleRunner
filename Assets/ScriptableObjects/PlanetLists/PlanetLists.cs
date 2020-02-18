@@ -5,7 +5,7 @@ public class PlanetLists : ScriptableObject
 {
      public string listName;
 
-     public Planets[] planets;
+     public Mesh[] planetMeshes;
      public Material[] materials;
 
 }
