@@ -1,5 +1,4 @@
-﻿//using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent (typeof (Rigidbody))]
 public class GravityBody : MonoBehaviour
@@ -18,6 +17,6 @@ public class GravityBody : MonoBehaviour
 
      private void FixedUpdate()
      {
-          planet.Attract(transform);
+          planet.Attract(transform, true);
      }
 }
