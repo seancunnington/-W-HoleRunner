@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HoleActivate : MonoBehaviour
 {
@@ -24,15 +23,13 @@ public class HoleActivate : MonoBehaviour
 
           // Then it's okay to set a random vertexID.
           vertexID = RandomVertex(maxNumVertices);
-
-          // After finding vertexID, okay to start using it for calculation.
-          SetRotation(vertexID);
      }
 
 
      private void FixedUpdate()
      {
           SetPosition(vertexID);
+          SetRotation();
      }
 
 
@@ -51,20 +48,23 @@ public class HoleActivate : MonoBehaviour
      }
 
 
+     /// <summary>
+     /// Update the Hole's position in respect to the planet's vertex world point.
+     /// </summary>
+     /// <param name="vertexID"></param>
      private void SetPosition(int vertexID)
      {
-          // Update the Hole's position in respect to the planet's vertex world point.
+          
           transform.position = currentPlanet.GetComponent<VertexObjects>().VertexPosition(vertexID);
      }
 
 
-     private void SetRotation(int normalID)
+     /// <summary>
+     /// Update the Hole's rotation in respect to the the GravityAttractor in parentRoot.
+     /// </summary>
+     private void SetRotation()
      {
-          Vector3 normalVec = currentPlanet.GetComponent<VertexObjects>().VertexNormalDirection(normalID);
-          Quaternion targetDir = Quaternion.FromToRotation(transform.up, normalVec);
-
-          //Update the Hole's rotation in respect to the planet's vertex normal.
-          transform.localRotation = targetDir * transform.localRotation;
+          parentRoot.GetComponent<GravityAttractor>().Attract(transform, false);
      }
 
 
@@ -77,7 +77,7 @@ public class HoleActivate : MonoBehaviour
           disablePlanet.GetComponent<MeshCollider>().enabled = false;
 
           // Add a sharp downward force to the player.
-          player.GetComponent<Rigidbody>().AddForce(-Vector3.up * forceScale, ForceMode.Impulse);
+          player.GetComponent<Rigidbody>().AddForce(transform.rotation * -Vector3.up * forceScale, ForceMode.Impulse);
 
           // Change all planets.
           // This is how the player falls towards the next one.
@@ -88,23 +88,6 @@ public class HoleActivate : MonoBehaviour
 
           // Randomize the hole's position on the new planet.
           vertexID = RandomVertex(maxNumVertices);
-
-          // Update Hole's new rotation
-          SetRotation(vertexID);
-     }
-
-
-
-     public void PlanetSurfacePosition()
-     {
-
-     }
-
-
-
-     public void RandomSurfacePosition()
-     {
-
      }
 
 
