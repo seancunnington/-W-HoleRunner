@@ -20,7 +20,7 @@ public class PlanetManager : MonoBehaviour
           middleP = transform.Find("MiddlePlanet");
           innerP = transform.Find("InnerPlanet");
 
-          maxPlanetSize = rootList.planets.Length;
+          maxPlanetSize = rootList.planetMeshes.Length;
           maxMaterialSize = rootList.materials.Length;
      }
 
@@ -29,14 +29,34 @@ public class PlanetManager : MonoBehaviour
      {
           ScaleDown(outerP);
           ScaleDown(middleP);
-          //ScaleDown(innerP);
+          ScaleDown(innerP);
      }
 
 
+     /// <summary>
+     /// Scales down the planet being referenced, if it hasn't already reached the mininum scaling amount (10).
+     /// </summary>
+     /// <param name="planet"></param>
      private void ScaleDown(Transform planet)
      {
+          // If the planet has reached the minimum scaling (hardcoded to 10), stop scaling.
+          if (planet.transform.localScale.x <= 10)
+               return;
+
+          // Else, scale down.
           float scaling = Time.fixedDeltaTime * scaleSpeed;
           planet.transform.localScale -= new Vector3(scaling, scaling, scaling);
+     }
+
+
+
+     /// <summary>
+     /// Generate a new scale based on the scales of two planets.
+     /// </summary>
+     /// <returns></returns>
+     private float GenerateScale(Transform p1, Transform p2)
+     {
+          return p1.localScale.x + p2.localScale.x;
      }
 
 
@@ -48,13 +68,11 @@ public class PlanetManager : MonoBehaviour
 
           // Set the MIDDLE planet's mesh and scale to the current OUTER planet's.
           // (the current planet to fall towards)
-          middleP.GetComponent<MeshFilter>().mesh = outerP.GetComponent<MeshFilter>().mesh;
-          middleP.GetComponent<MeshCollider>().sharedMesh = outerP.GetComponent<MeshFilter>().mesh;
-          middleP.localScale = outerP.localScale;
+          SetPlanet(middleP, outerP);
 
           // Generate a OUTER planet.
           // (the next planet to fall towards)
-          GeneratePlanet(outerP, maxScale);
+          GeneratePlanet(outerP, GenerateScale(innerP, middleP));
 
           // The MIDDLE planet's collider has been disabled via the Hole Object. 
           // After a brief delay, re-enable it here.
@@ -67,10 +85,10 @@ public class PlanetManager : MonoBehaviour
      /// </summary>
      /// <param name="planet"></param>
      /// <param name="scale"></param>
-     private void GeneratePlanet(Transform planet, int scale)
+     private void GeneratePlanet(Transform planet, float scale)
      {
           int randomNum = Random.Range(0, maxPlanetSize);
-          Planets tempPlanet = rootList.planets[randomNum];      // Random Mesh
+          Mesh tempMesh = rootList.planetMeshes[randomNum];      // Random Mesh
 
           randomNum = Random.Range(0, maxMaterialSize);
           Material tempMat = rootList.materials[randomNum];      // Random Material
@@ -80,8 +98,12 @@ public class PlanetManager : MonoBehaviour
           int rand3 = Random.Range(0, 359);
           planet.localRotation = Quaternion.Euler(randomNum, rand2, rand3);   // Random Rotation
 
-          planet.GetComponent<MeshFilter>().mesh = tempPlanet.mesh;
-          planet.GetComponent<MeshCollider>().sharedMesh = tempPlanet.mesh;
+          // If the scale is larger than the maxScale, then set scale to maxScale.
+          if (scale > maxScale)
+               scale = maxScale;
+
+          planet.GetComponent<MeshFilter>().mesh = tempMesh;
+          planet.GetComponent<MeshCollider>().sharedMesh = tempMesh;
           planet.GetComponent<MeshRenderer>().material = tempMat;
           planet.localScale = new Vector3(scale, scale, scale);   // Reset the scale of the largest planet
      }
