@@ -13,7 +13,8 @@ public class GravityAttractor : MonoBehaviour
      /// Attracts any gravity bodies towards the center of this attractor (a.k.a the planet).
      /// </summary>
      /// <param name="body"></param>
-     public void Attract(Transform body)
+     /// <param name="useGravity"></param>
+     public void Attract(Transform body, bool useNewGravity)
      {
           Vector3 targetDirection = (body.position - transform.position).normalized;
 
@@ -22,10 +23,21 @@ public class GravityAttractor : MonoBehaviour
           Vector3 bodyUp = body.up * flip; 
           body.rotation = Quaternion.FromToRotation(bodyUp, targetDirection) * body.rotation;
 
+          // If not using gravity, return here.
+          if (!useNewGravity)
+               return;
+
+          // Else, affect the rigidbody. 
           body.GetComponent<Rigidbody>().AddForce(targetDirection * gravity);
 
           // When activated, flip the gravity.
           FlipGravity();
+     }
+
+
+     public void RotateTowardsAttractor(Transform body)
+     {
+          Vector3 targetDirection = (body.position - transform.position).normalized;
      }
 
 
